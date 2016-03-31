@@ -2,7 +2,7 @@
     <div class="jumbotron">
         <h1>Welcome</h1>
         <p>
-            Welcome to the Wordery Developer challenge. This should give you a chance to show you know PHP.
+            Welcome to Tim's Developer challenge. Feel free to hack this apart, fix bugs, and whatever you see fit.
         </p>
     </div>
 
@@ -11,7 +11,7 @@
     <p>It's deliberatly tiny so there's no additional requirements to run. All you should need is PHP's build in http server.</p>
 
     <h2>The Task</h2>
-    <p>Sometimes we want to limit the rate of certain activities on our website. For example, we limit failed login attempts such that the account gets locked for a period of time
+    <p>Sometimes we want to limit the rate of certain activities on our website. For example, we limit login attempts such that a user's account gets locked for a period of time
     if too many failed login attempts happen in quick sucession.</p>
 
     <p>There are many different algorithms and rules for deciding how we limit those activies. We want you to implement a version of the Leaky Bucket Algorithm.</p>
@@ -25,8 +25,10 @@
     requests after you have reached the maximum request quota is governed by the restore rate, the time it takes to allow you to make new requests.
     </p>
 
-    <p>Look at the contents of the &quot;src/Challenge/Throttle&quot; folder. You can see there is already some code in place that handles throttling. What isn't there however is an implemention of the 'StoreageInterface' or the 'LeakyBucket' rule.</p>
+    <p>Look at the contents of the &quot;src/Challenge/Throttle&quot; folder. You can see there is already some code in place that handles throttling. What isn't there however is an implemention of the 'StoreageInterface' or the 'LeakyBucket' rule. You will need to create these. The DI container is looking for a class called &quot;src/Challenge/Throttle/Storage/SessionStoreage&quot;. This suggests you may want to use $_SESSION for that part.
     </p>
+
+    <p>When done, zip up you project folder and send it over.</p>
 
     <div class="center-block">
         <a href='<?=$nextUrl?>' class="btn btn-default">Go have a play</a>
