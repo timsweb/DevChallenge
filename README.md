@@ -4,8 +4,8 @@ Start by cloning this repository. Then install the dependenices using composer.
 
     php composer.phar install
 
-Once that's done, this should runable using PHP's built in http server. From the project root you can:
+Once that's done, this should be runable using PHP's built in http server. From the project root you can:
 
     php -S localhost:8080 -t ./public/
 
-Then visit http://localhost:8080 for the rest of the instructions.
+Then visit [http://localhost:8080](http://localhost:8080). The home page will have more deatailed insturctions on what to do next, but a quick summary is that there is some incomplete throttling code that needs implementing. 
