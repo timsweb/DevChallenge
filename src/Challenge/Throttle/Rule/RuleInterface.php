@@ -8,7 +8,7 @@ namespace Challenge\Throttle\Rule;
 interface RuleInterface
 {
     /**
-     * Check to see if we are under a trottled condition.
+     * Check to see if we are under a throttled condition.
      * @param array of int $requestTimestamps array of recent requests for a single identifier.
      * @return boolean true if request throttled, false otherwise.
      */
