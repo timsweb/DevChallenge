@@ -26,7 +26,7 @@ $app->any('/doEvent', function($request, $response, $args)  use ($app){
             $throttler->log('testEvent');
             return $response->withStatus(302)->withHeader('Location', '/play?throttled=true');
         } else {
-            $this->logger->warning('Event not done');
+            $this->logger->info('Event not done');
             return $response->withStatus(302)->withHeader('Location', '/play?throttled=false');
         }
     }
