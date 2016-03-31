@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="row">
+        <p>Press buttons to do events. Blocking causes request to wait until event can be completed.</p>
+        <form action="/doEvent" method="POST">
+            <button type="submit" name="notBlocking">Do event</button>
+            <button type="submit" name="blocking" value="true">Do event (blocking)</button>
+        </form>
+    </div>
+    <?php if (isset($throttled)):?>
+        <?php if ($throttled):?>
+            <p class="bg-danger">Event was throttled</p>
+        <?php else: ?>
+            <p class="bg-success">Event happened</p>
+        <?php endif;?>
+    <?php endif;?>
+</div>
