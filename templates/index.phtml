@@ -11,10 +11,10 @@
     <p>It's deliberatly tiny so there's no additional requirements to run. All you should need is PHP's built in http server.</p>
 
     <h2>The Task</h2>
-    <p>Sometimes we want to limit the rate of certain activities on our website. For example, we limit login attempts such that a user's account gets locked for a period of time
-    if too many failed login attempts happen in quick succession. Or we might want to stop throttle an API we host to stop a single user using up too much resource.</p>
+    <p>Sometimes we want to ratelimit certain activities on our website. For example, we limit login attempts such that a user's account gets locked for a period of time
+    if too many failed login attempts happen in quick succession. Or we might want to throttle an API we host to stop a single user using up too much resource. There are many different algorithms and rules for deciding how we limit those activities. </p>
 
-    <p>There are many different algorithms and rules for deciding how we limit those activities. We want you to implement a variation of the <a href="https://en.wikipedia.org/wiki/Leaky_bucket" target="_blank">Leaky Bucket Algorithm</a>.</p>
+    <p><strong>We want you to implement a variation of the <a href="https://en.wikipedia.org/wiki/Leaky_bucket" target="_blank">Leaky Bucket Algorithm</a>.</strong></p>
 
     <p>The algorithm is based on the analogy where a bucket has a hole in the bottom from which water leaks out at a constant rate. Water can be added to the bucket intermittently, but if too much water is added at once or if water is added at too high an average rate, the water will exceed the capacity of the bucket.</p>
 
