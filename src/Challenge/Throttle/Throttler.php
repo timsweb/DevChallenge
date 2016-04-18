@@ -1,5 +1,4 @@
 <?php
-
 namespace Challenge\Throttle;
 
 /**
@@ -14,6 +13,7 @@ class Throttler
      */
     protected $_storage;
 
+    protected $_rulesLoaded = false;
 
     /**
      * Add a rule to this throttler
@@ -23,6 +23,7 @@ class Throttler
     public function addRule(Rule\RuleInterface $rule)
     {
         $this->_ruleChain[] = $rule;
+        $this->_rulesLoaded = false;
         return $this;
     }
 
@@ -64,6 +65,25 @@ class Throttler
     }
 
     /**
+     * Generator to load iterate rules after applying their state from storage
+     * @return \Challenge\Throttle\Rule\RuleInterface
+     */
+    protected function _loadRules()
+    {
+        foreach ($this->_ruleChain as $rule) {
+            if (!$this->_rulesLoaded) {
+                $state = $this->getStorage()->retrieve($this->_getStorageKey($identifier, $rule->getKey()));
+                if (!is_array($state)) {
+                    throw new \RuntimeException('state retrieved from storage must be an array');
+                }
+                $rule->setState($state);
+            }
+            yield $rule;
+        }
+        $this->_rulesLoaded = true;
+    }
+
+    /**
      * Test if the current identifier is under a throttled condition.
      *
      * @param string $identifier
@@ -72,12 +92,8 @@ class Throttler
      */
     public function throttled($identifier)
     {
-        $requests = $this->getStorage()->retrieve($identifier);
-        if (!is_array($requests)) {
-            throw new \RuntimeException('requests array retrieved from storage must be an array');
-        }
-        foreach ($this->_ruleChain as $rule) {
-            if ($rule->throttled($requests)) {
+        foreach ($this->_loadRules() as $rule) {
+            if ($rule->throttled()) {
                 return true;
             }
         }
@@ -85,25 +101,14 @@ class Throttler
     }
 
     /**
-     * @return int
+     * Mix the identifer and the rule key to have a lookup string to use in storage
+     * @param  string $identifier
+     * @param  string $ruleKey
+     * @return string
      */
-    protected function _getBackwardWindow()
+    protected function _getStorageKey($identifier, $ruleKey)
     {
-        $pastCutoff = PHP_INT_MAX;
-        foreach ($this->_ruleChain as $rule) {
-            if ($rule->getWindow() < $pastCutoff) {
-                $pastCutoff = $rule->getWindow();
-            }
-        }
-        return $pastCutoff;
-    }
-
-    /**
-     * @return int
-     */
-    protected function _getForwardWindow()
-    {
-        return (int) (time() - $this->_getBackwardWindow()) * 1.5;
+        return sprintf('%s.%s', $identifier, $ruleKey);
     }
 
     /**
@@ -114,23 +119,19 @@ class Throttler
      */
     public function log($identifier)
     {
-        $requests = $this->getStorage()->retrieve($identifier);
-        if (!is_array($requests)) {
-            throw new \RuntimeException('requests array retrieved from storage must be an array');
+        $when = microtime(true);
+        foreach($this->_loadRules() as $rule) {
+            $rule->log($when);
+            $this->_storage->store($this->_getStorageKey($identifier, $rule->getKey()), $rule->getState(), $rule->getTtl());
         }
-
-        $requests[] = microtime(true);
-        $backWindow = $this->_getBackwardWindow();
-        $requests = array_values(array_filter($requests, function ($value) use ($backWindow) {
-            return $value >= $backWindow;
-        }));
-        $this->_storage->store($identifier, $requests, $this->_getForwardWindow());
         return $this;
     }
 
     public function clear($identifier)
     {
-        $this->getStorage()->delete($identifier);
+        foreach($this->_ruleChain as $rule) {
+            $this->getStorage()->delete($this->_getStorageKey($identifier, $rule->getKey()));
+        }
         return $this;
     }
 
@@ -138,10 +139,10 @@ class Throttler
      * Call function when allowed
      * @param  string   $identifier
      * @param  callable $request
-     * @param  float  $pollFrequency in seconds
+     * @param  float  $pollFrequency
      * @return mixed
      */
-    public function throttleRequest($identifier, callable $request, $pollFrequency = 0.5)
+    public function throttleRequset($identifier, callable $request, $pollFrequency = 0.5)
     {
         while ($this->throttled($identifier)) {
             usleep($pollFrequency * 1000000);

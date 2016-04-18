@@ -1,5 +1,4 @@
 <?php
-
 namespace Challenge\Throttle\Storage;
 
 /**
@@ -9,14 +8,14 @@ interface StorageInterface
 {
     /**
      * @parma $identifier string the identifier of the request. e.g. username or IP address
-     * @param $requests array of int timestamps of reqests
-     * @param $ttl the ttl to set on the storage if it supports it. It's safe to ignore this as the Throttler class handles garbage collection
+     * @param $state an array of state information
+     * @param $ttl the ttl to set on the storage if it supports it, othwerwise some garbage collection will be required.
      */
-    public function store($identifier, array $requests, $ttl);
+    public function store($identifier, array $state, $ttl);
 
     /**
      * @param $identifier
-     * @return array of int
+     * @return array state
      */
     public function retrieve($identifier);
 
