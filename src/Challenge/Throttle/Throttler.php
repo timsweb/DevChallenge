@@ -68,10 +68,10 @@ class Throttler
      * Generator to load iterate rules after applying their state from storage
      * @return \Challenge\Throttle\Rule\RuleInterface
      */
-    protected function _loadRules()
+    protected function _loadRules($identifier)
     {
         foreach ($this->_ruleChain as $rule) {
-            if (!$this->_rulesLoaded) {
+            if (!(isset($this->_rulesLoaded[$identifier]) && $this->_rulesLoaded[$identifier])) {
                 $state = $this->getStorage()->retrieve($this->_getStorageKey($identifier, $rule->getKey()));
                 if (!is_array($state)) {
                     throw new \RuntimeException('state retrieved from storage must be an array');
@@ -80,7 +80,7 @@ class Throttler
             }
             yield $rule;
         }
-        $this->_rulesLoaded = true;
+        $this->_rulesLoaded[$identifier] = true;
     }
 
     /**
@@ -92,8 +92,8 @@ class Throttler
      */
     public function throttled($identifier)
     {
-        foreach ($this->_loadRules() as $rule) {
-            if ($rule->throttled()) {
+        foreach ($this->_loadRules($identifier) as $rule) {
+            if ($rule->throttled($identifier)) {
                 return true;
             }
         }
@@ -101,7 +101,7 @@ class Throttler
     }
 
     /**
-     * Mix the identifer and the rule key to have a lookup string to use in storage
+     * Mix the identifier and the rule key to have a lookup string to use in storage
      * @param  string $identifier
      * @param  string $ruleKey
      * @return string
@@ -120,7 +120,7 @@ class Throttler
     public function log($identifier)
     {
         $when = microtime(true);
-        foreach($this->_loadRules() as $rule) {
+        foreach($this->_loadRules($identifier) as $rule) {
             $rule->log($when);
             $this->_storage->store($this->_getStorageKey($identifier, $rule->getKey()), $rule->getState(), $rule->getTtl());
         }
@@ -142,7 +142,7 @@ class Throttler
      * @param  float  $pollFrequency
      * @return mixed
      */
-    public function throttleRequset($identifier, callable $request, $pollFrequency = 0.5)
+    public function throttleRequest($identifier, callable $request, $pollFrequency = 0.5)
     {
         while ($this->throttled($identifier)) {
             usleep($pollFrequency * 1000000);

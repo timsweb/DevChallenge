@@ -1,5 +1,5 @@
 <?php
-namespace Throttle\Rule;
+namespace Challenge\Throttle\Rule;
 
 /**
  * @author Tim Williams <tim@wordery.com>
