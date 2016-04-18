@@ -22,11 +22,11 @@ $app->any('/doEvent', function($request, $response, $args)  use ($app){
         });
     } else {
         if ($throttler->throttled('testEvent')) {
-            $this->logger->info('Doing event');
-            $throttler->log('testEvent');
+            $this->logger->info('Event not done');
             return $response->withStatus(302)->withHeader('Location', '/play?throttled=true');
         } else {
-            $this->logger->info('Event not done');
+            $throttler->log('testEvent');
+            $this->logger->info('Doing event');
             return $response->withStatus(302)->withHeader('Location', '/play?throttled=false');
         }
     }

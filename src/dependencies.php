@@ -28,8 +28,8 @@ $container['throttlerStorage'] = function($c) {
 };
 
 $container['throttlerRule'] = function($c) {
-    $bucketSize = 10;
-    $drainRate = 2; //requests per second
+    $bucketSize = 5;
+    $drainRate = 0.25; //requests per second
     return new \Challenge\Throttle\Rule\LeakyBucket($bucketSize, $drainRate);
 };
 
