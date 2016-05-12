@@ -1,6 +1,6 @@
 # Tim's Recruitment challenge
 
-Start by cloning this repository. Then install the dependenices using composer.
+Start by cloning this repository. Then install the dependenices using composer. Composer isn't part of this codebase, so if you don't already have it installed you will need to download it. 
 
     php composer.phar install
 
