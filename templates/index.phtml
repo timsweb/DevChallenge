@@ -25,7 +25,8 @@
     requests after you have reached the maximum request quota is governed by the restore rate, the time it takes to allow you to make new requests.
     </p>
 
-    <p>Look at the contents of the &quot;src/Challenge/Throttle&quot; folder. You can see there is already some code in place that handles throttling. What isn't there however is an implementation of the 'StoreageInterface' or the 'LeakyBucket' rule. You will need to create these. The DI container is looking for a class called &quot;src/Challenge/Throttle/Storage/SessionStoreage&quot;. This suggests you may want to use $_SESSION for that part.
+    <p>
+        Look at the contents of the &quot;src/Challenge/Throttle&quot; folder. You can see there is already some code in place that handles throttling. What isn't there however is an implementation of the 'LeakyBucket' rule.
     </p>
 
     <p>
